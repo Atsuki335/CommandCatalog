@@ -8,12 +8,11 @@ class catalogPage extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      home: ListupPage(),
+      home: SideNavigation(),
     );
   }
 }
 
-//ナビゲーション
 class SideNavigation extends StatefulWidget {
   @override
   _SideNavigationState createState() => _SideNavigationState();
@@ -24,54 +23,48 @@ class _SideNavigationState extends State<SideNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    return NavigationRail(
-        backgroundColor: Color.fromARGB(79, 245, 221, 221),
-        selectedIndex: selectedIndex,
-        onDestinationSelected: (index) {
-          setState(() {
-            selectedIndex = index;
-          });
-        },
-        destinations: [
-          NavigationRailDestination(
-            icon: Icon(Icons.catching_pokemon),
-            label: Text('commandLine'),
-          ),
-          NavigationRailDestination(
-              icon: Icon(Icons.menu_book), label: Text('text1')),
-          NavigationRailDestination(
-              icon: Icon(Icons.cruelty_free_outlined), label: Text('text2')),
-          NavigationRailDestination(
-              icon: Icon(Icons.food_bank), label: Text('text3')),
-          NavigationRailDestination(
-              icon: Icon(Icons.thumb_up_alt), label: Text('good')),
-          NavigationRailDestination(
-              icon: Icon(Icons.thumb_up_alt_outlined), label: Text('goodしてない')),
-        ]);
+    return Scaffold(
+        backgroundColor: Color.fromARGB(255, 255, 234, 234),
+        body: Row(
+          children: [
+            NavigationRail(
+              backgroundColor: Color.fromARGB(79, 245, 221, 221),
+              selectedIndex: selectedIndex,
+              onDestinationSelected: (index) {
+                setState(() {
+                  selectedIndex = index;
+                });
+              },
+              destinations: [
+                NavigationRailDestination(
+                  icon: Icon(Icons.catching_pokemon),
+                  label: Text('commandLine'),
+                ),
+                NavigationRailDestination(
+                    icon: Icon(Icons.menu_book), label: Text('text1')),
+                NavigationRailDestination(
+                    icon: Icon(Icons.cruelty_free_outlined),
+                    label: Text('text2')),
+                NavigationRailDestination(
+                    icon: Icon(Icons.food_bank), label: Text('text3')),
+                NavigationRailDestination(
+                    icon: Icon(Icons.thumb_up_alt), label: Text('good')),
+                NavigationRailDestination(
+                    icon: Icon(Icons.thumb_up_alt_outlined),
+                    label: Text('goodしてない')),
+              ],
+            ),
+            VerticalDivider(
+              thickness: 1,
+              width: 1,
+            ),
+            Expanded(
+              child: ListPage(selectedIndex: selectedIndex),
+            ),
+          ],
+        ));
   }
 }
-
-//goodカウント数
-// class ThumbCount extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Row(
-//       children: [
-//         Expanded(
-//             flex: 1,
-//             child: Container(
-//               child: ClipOval(
-//                   child: Container(
-//                 color: Colors.orange[100],
-//                 width: 30,
-//                 height: 30,
-//                 child: Icon(Icons.thumb_up),
-//               )),
-//             )),
-//       ],
-//     );
-//   }
-// }
 
 @override
 Widget ModelToWidget(Inside model) {
@@ -111,6 +104,10 @@ Widget ModelToWidget(Inside model) {
 }
 
 class ListPage extends StatefulWidget {
+  final int selectedIndex;
+
+  ListPage({Key? key, this.selectedIndex = 0}) : super(key: key);
+
   @override
   State<ListPage> createState() => _ListPageState();
 }
@@ -121,7 +118,7 @@ class _ListPageState extends State<ListPage> {
   Widget build(BuildContext context) {
     final navState = context.findAncestorStateOfType<_SideNavigationState>();
     List<Inside> contentList;
-    switch (navState?.selectedIndex) {
+    switch (widget.selectedIndex) {
       case 0:
         contentList = pokemonModels;
         break;
@@ -143,27 +140,6 @@ class _ListPageState extends State<ListPage> {
       itemBuilder: (context, index) {
         return ModelToWidget(contentList[index]);
       },
-    );
-  }
-}
-
-class ListupPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromARGB(255, 255, 234, 234),
-      body: Row(
-        children: [
-          SideNavigation(),
-          VerticalDivider(
-            thickness: 1,
-            width: 1,
-          ),
-          Expanded(child: ListPage()),
-
-          //ThumbCount(),
-        ],
-      ),
     );
   }
 }
